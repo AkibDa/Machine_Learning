@@ -9,3 +9,4 @@ y = melbourne_data.Price
 melbourne_features = ['Rooms', 'Bathroom', 'Landsize', 'Lattitude', 'Longtitude']
 X = melbourne_new_data[melbourne_features]
 print(X.describe())
+print(X.head())
