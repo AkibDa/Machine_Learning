@@ -5,11 +5,23 @@ from sklearn.metrics import accuracy_score
 from groq import Groq
 from key import API_KEY
 
+def get_Disease_Precaution(disease):
+  df_precaution = pd.read_csv('archive/symptom_precaution.csv', index_col=0)
+  if disease in df_precaution.index:
+    print("\n🛡️ Disease Precautions:")
+    precautions = df_precaution.loc[disease]
+    for i, precaution in enumerate(precautions, start=1):
+        if pd.notna(precaution):
+            print(f"{i}. {precaution}")
+  else:
+    print(f"\n⚠️ No precautions found for {disease}.")
+
 def get_Disease_Description(disease):
   df_description = pd.read_csv('archive/symptom_Description.csv', index_col=0)
   if disease in df_description.index:
     print("\n🩺 Disease Description:")
     print(df_description.loc[disease]['Description'])
+    get_Disease_Precaution(disease)
   else:
     print(f"\nNo description found for {disease}.")
 
@@ -104,7 +116,11 @@ if __name__ == "__main__":
     print("💬 You can ask the chatbot for advice.")
     while True:
       response = chatbot()
-      if response.lower() == 'exit':
+      if not response:
+        print("⚠️ Chatbot didn't return a response.")
+        continue
+      if response.strip().lower() == 'exit':
+        print("👋 Exiting the chatbot.")
         break
       print(response)
   else:
