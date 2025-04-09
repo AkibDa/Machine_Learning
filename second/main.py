@@ -8,7 +8,13 @@ def get_Disease_Description(disease):
   print(df_description.head())
   
 def get_Disease(symptoms_list):
-  df_Disease = pd.read_csv('archive/dataset.csv', index_col=0)
+  df_Disease = pd.read_csv('archive/dataset.csv')
+  for symptom in symptoms_list:
+    if symptom not in df_Disease.columns:
+      print(f"Symptom '{symptom}' not found in the dataset.")
+      return
+  for i in range(len(symptoms_list)):
+    df_Disease = df_Disease[df_Disease[f'Symptom_{i}'].str.contains('|'.join(symptoms_list))]
   y = df_Disease['Disease']
   X = df_Disease[symptoms_list]
   
