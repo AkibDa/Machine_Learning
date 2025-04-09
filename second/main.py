@@ -1,7 +1,8 @@
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from key import API_KEY
 
 def get_Disease_Description(disease):
   df_description = pd.read_csv('archive/symptom_Description.csv', index_col=0)
@@ -35,7 +36,7 @@ def get_Disease(symptoms_list):
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-  model = DecisionTreeClassifier()
+  model = RandomForestClassifier(n_estimators=100, random_state=42)
   model.fit(X_train, y_train)
 
   y_pred = model.predict(X_test)
@@ -69,6 +70,9 @@ def get_Symptoms():
   print("\n📝 Symptoms provided:")
   print(Symptoms_list)
   get_Disease(Symptoms_list)
+
+def chatbot():
+  print("🤖 Chatbot is ready to assist you with your queries.")
 
 if __name__ == "__main__":
   print("🩻 Welcome to the Disease Prediction System")
