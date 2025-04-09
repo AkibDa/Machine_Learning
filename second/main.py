@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from groq import Groq
 from key import API_KEY
 
 def get_Disease_Description(disease):
@@ -63,7 +64,7 @@ def get_Disease(symptoms_list):
 def get_Symptoms():
   Symptoms = input("\nEnter the Symptoms: ").lower()
   if Symptoms == 'exit':
-    print("👋 Exiting the program.")
+    print("👋 Thank you for using DiagnoWise. Goodbye!")
     return
   Symptoms_list = Symptoms.replace(" ", "_").split(",")
   Symptoms_list = list(set(sym.strip() for sym in Symptoms_list if sym.strip()))
@@ -73,10 +74,39 @@ def get_Symptoms():
 
 def chatbot():
   print("🤖 Chatbot is ready to assist you with your queries.")
+  prompt = input("Enter your query(Type 'exit' to quit): ")
+  if prompt.lower() == 'exit':
+    print("👋 Exiting the chatbot.")
+    return
+  try:
+    client = Groq(api_key=API_KEY)
+    response = client.chat.completions.create(
+      model="llama3-70b-8192",
+      messages=[
+        {"role": "system", "content": "You are a medical assistant. Provide concise, actionable advice."},
+        {"role": "user", "content": prompt}
+      ],
+      temperature=0.7,
+      max_tokens=1024
+    )
+    return response.choices[0].message.content
+  except Exception as e:
+    return f"❌ Error fetching advice: {e}"
 
 if __name__ == "__main__":
-  print("🩻 Welcome to the Disease Prediction System")
+  print("🩻 Welcome to DiagnoWise")
   print("🔹 Please enter the symptoms you are experiencing, separated by commas.")
   print("🔹 Example: itching, skin_rash, stomach_pain")
   print("🔹 Type 'exit' to quit.")
   get_Symptoms()
+  choice = input("\nWould you like to ask the chatbot for advice? (yes/no): ").strip().lower()
+  if choice == 'yes':
+    print("💬 You can ask the chatbot for advice.")
+    while True:
+      response = chatbot()
+      if response.lower() == 'exit':
+        break
+      print(response)
+  else:
+    print("👋 Thank you for using DiagnoWise. Goodbye!")
+  
