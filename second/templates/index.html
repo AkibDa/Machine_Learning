@@ -5,80 +5,80 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">🩺 DiagnoWise</h1>
-        
-        <div class="card mt-4">
-            <div class="card-header bg-primary text-white">
-                Symptom Checker
-            </div>
-            <div class="card-body">
-                <input type="text" id="symptoms" class="form-control" placeholder="itching,skin_rash,stomach_pain">
-                <button id="diagnoseBtn" class="btn btn-primary mt-2">Diagnose</button>
-                <div id="results" class="mt-3"></div>
-            </div>
+  <div class="container mt-5">
+    <h1 class="text-center">🩺 DiagnoWise</h1>
+      
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+          Symptom Checker
         </div>
+        <div class="card-body">
+          <input type="text" id="symptoms" class="form-control" placeholder="itching,skin_rash,stomach_pain">
+          <button id="diagnoseBtn" class="btn btn-primary mt-2">Diagnose</button>
+          <div id="results" class="mt-3"></div>
+        </div>
+      </div>
 
-        <div class="card mt-4">
-            <div class="card-header bg-info text-white">
-                Medical Chatbot
-            </div>
-            <div class="card-body">
-                <input type="text" id="chatInput" class="form-control" placeholder="Ask about your health...">
-                <button id="askBtn" class="btn btn-info mt-2">Ask</button>
-                <div id="chatResponse" class="mt-3 p-3 bg-light rounded"></div>
-            </div>
+      <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+          Medical Chatbot
         </div>
+        <div class="card-body">
+          <input type="text" id="chatInput" class="form-control" placeholder="Ask about your health...">
+          <button id="askBtn" class="btn btn-info mt-2">Ask</button>
+          <div id="chatResponse" class="mt-3 p-3 bg-light rounded"></div>
+        </div>
+      </div>
     </div>
 
     <script>
-        document.getElementById('diagnoseBtn').addEventListener('click', async () => {
-            const symptoms = document.getElementById('symptoms').value;
-            const response = await fetch('/diagnose', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `symptoms=${encodeURIComponent(symptoms)}`
-            });
-            const data = await response.json();
-            
-            let html = '';
-            if (data.error) {
-                html = `<div class="alert alert-danger">${data.error}</div>`;
-            } else {
-                data.results.forEach(result => {
-                    html += `
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            ${result.rank}. ${result.disease} (Confidence: ${result.confidence})
-                        </div>
-                        <div class="card-body">
-                            <h5>Description</h5>
-                            <p>${result.description || 'No description available'}</p>
-                            ${result.precautions ? `
-                            <h5>Precautions</h5>
-                            <ol>${result.precautions.map(p => `<li>${p}</li>`).join('')}</ol>
-                            ` : ''}
-                        </div>
-                    </div>`;
-                });
-            }
-            document.getElementById('results').innerHTML = html;
-        });
+    document.getElementById('diagnoseBtn').addEventListener('click', async () => {
+      const symptoms = document.getElementById('symptoms').value;
+      const response = await fetch('/diagnose', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `symptoms=${encodeURIComponent(symptoms)}`
+      });
+      const data = await response.json();
+      
+      let html = '';
+      if (data.error) {
+        html = `<div class="alert alert-danger">${data.error}</div>`;
+      } else {
+        data.results.forEach(result => {
+            html += `
+            <div class="card mb-3">
+                <div class="card-header">
+                    ${result.rank}. ${result.disease} (Confidence: ${result.confidence})
+                </div>
+                <div class="card-body">
+                    <h5>Description</h5>
+                    <p>${result.description || 'No description available'}</p>
+                    ${result.precautions ? `
+                    <h5>Precautions</h5>
+                    <ol>${result.precautions.map(p => `<li>${p}</li>`).join('')}</ol>
+                    ` : ''}
+                </div>
+            </div>`;
+          });
+      }
+      document.getElementById('results').innerHTML = html;
+    });
 
-        document.getElementById('askBtn').addEventListener('click', async () => {
-            const prompt = document.getElementById('chatInput').value;
-            const response = await fetch('/chatbot', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `prompt=${encodeURIComponent(prompt)}`
-            });
-            const data = await response.json();
-            document.getElementById('chatResponse').innerText = data.response;
-        });
-    </script>
+    document.getElementById('askBtn').addEventListener('click', async () => {
+      const prompt = document.getElementById('chatInput').value;
+      const response = await fetch('/chatbot', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `prompt=${encodeURIComponent(prompt)}`
+      });
+      const data = await response.json();
+      document.getElementById('chatResponse').innerText = data.response;
+    });
+  </script>
 </body>
 </html>
