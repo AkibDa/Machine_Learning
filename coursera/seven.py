@@ -24,5 +24,5 @@ model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
 test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
 print(f'\nTest accuracy: {test_acc}')
 
-model.save('my_cifar10_model.h5')
-loaded_model = tf.keras.models.load_model('my_cifar10_model.h5')
+model.save('my_cifar10_model.h5') #Optional
+loaded_model = tf.keras.models.load_model('my_cifar10_model.h5') #Optional
