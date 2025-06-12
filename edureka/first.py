@@ -13,5 +13,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
 name = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
 dataset = pandas.read_csv(url, names=name)
-print(dataset.shape)
-print(dataset.head(30))
+# print(dataset.shape)
+# print(dataset.head(30))
+# print(dataset.describe())
+# print(dataset.groupby('species').size())
