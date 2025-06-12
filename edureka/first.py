@@ -17,3 +17,6 @@ dataset = pandas.read_csv(url, names=name)
 # print(dataset.head(30))
 # print(dataset.describe())
 # print(dataset.groupby('species').size())
+
+dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
+plt.show()
