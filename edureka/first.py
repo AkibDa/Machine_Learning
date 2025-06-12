@@ -13,6 +13,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
 name = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
 dataset = pandas.read_csv(url, names=name)
+
 # print(dataset.shape)
 # print(dataset.head(30))
 # print(dataset.describe())
@@ -22,5 +23,12 @@ dataset = pandas.read_csv(url, names=name)
 # plt.show()
 # dataset.hist()
 # plt.show()
-scatter_matrix(dataset)
-plt.show()
+# scatter_matrix(dataset)
+# plt.show()
+
+array = dataset.values
+X = array[:,0:4]
+Y = array[:,4]
+validation_size = 0.20
+seed = 6
+X_train, X_test, y_train, y_test = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
