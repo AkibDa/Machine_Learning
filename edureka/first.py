@@ -32,3 +32,25 @@ Y = array[:,4]
 validation_size = 0.20
 seed = 6
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
+
+seed = 6
+scoring = 'accuracy'
+
+# Spot Check Algorithm
+models = []
+models.append(('LR', LogisticRegression()))
+models.append(('LD', LinearDiscriminantAnalysis()))
+models.append(('KNN', KNeighborsClassifier()))
+models.append(('CART', DecisionTreeClassifier()))
+models.append(('NB', GaussianNB()))
+models.append(('SVM', SVC()))
+
+results = []
+names = []
+for name, model in models:
+  kfold = model_selection.KFold(n_splits=10, random_state=seed)
+  cv_results = model_selection.cross_val_score(model, X_train, y_train, cv=kfold, scoring=scoring)
+  results.append(cv_results)
+  names.append(name)
+  msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
+  print(msg)
