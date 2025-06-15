@@ -32,3 +32,13 @@ df_scaled = scaler.fit_transform(df)
 # Convert the scaled data back into a DataFrame
 df_scaled = pd.DataFrame(df_scaled, columns=['AnnualIncome', 'SpendingScore'])
 print(df_scaled.head())
+
+# Initialize and fit K-Means
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(df_scaled)
+
+# Add cluster labels to the original dataframe
+df['KMeans_Cluster'] = kmeans.labels_
+
+# Display the first few rows with cluster labels
+print(df.head())
