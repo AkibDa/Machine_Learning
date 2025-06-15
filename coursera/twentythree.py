@@ -24,3 +24,11 @@ df = pd.DataFrame(data)
 
 # Display the first few rows of the dataset
 print(df.head())
+
+# Normalize the dataset using StandardScaler
+scaler = StandardScaler()
+df_scaled = scaler.fit_transform(df)
+
+# Convert the scaled data back into a DataFrame
+df_scaled = pd.DataFrame(df_scaled, columns=['AnnualIncome', 'SpendingScore'])
+print(df_scaled.head())
