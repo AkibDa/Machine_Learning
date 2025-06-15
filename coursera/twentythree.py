@@ -42,3 +42,10 @@ df['KMeans_Cluster'] = kmeans.labels_
 
 # Display the first few rows with cluster labels
 print(df.head())
+
+# Plot K-Means clusters
+plt.scatter(df['AnnualIncome'], df['SpendingScore'], c=df['KMeans_Cluster'], cmap='viridis')
+plt.title('K-Means Clustering of Customers')
+plt.xlabel('Annual Income (in thousands)')
+plt.ylabel('Spending Score (1-100)')
+plt.show()
