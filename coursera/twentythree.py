@@ -59,3 +59,10 @@ df['DBSCAN_Cluster'] = dbscan.labels_
 
 # Display the first few rows with cluster labels
 print(df.head())
+
+# Plot DBSCAN clusters
+plt.scatter(df['AnnualIncome'], df['SpendingScore'], c=df['DBSCAN_Cluster'], cmap='rainbow')
+plt.title('DBSCAN Clustering of Customers')
+plt.xlabel('Annual Income (in thousands)')
+plt.ylabel('Spending Score (1-100)')
+plt.show()
