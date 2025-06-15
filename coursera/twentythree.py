@@ -49,3 +49,13 @@ plt.title('K-Means Clustering of Customers')
 plt.xlabel('Annual Income (in thousands)')
 plt.ylabel('Spending Score (1-100)')
 plt.show()
+
+# Initialize and fit DBSCAN
+dbscan = DBSCAN(eps=0.5, min_samples=3)
+dbscan.fit(df_scaled)
+
+# Add DBSCAN cluster labels to the original dataframe
+df['DBSCAN_Cluster'] = dbscan.labels_
+
+# Display the first few rows with cluster labels
+print(df.head())
