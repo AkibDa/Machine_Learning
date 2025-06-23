@@ -68,3 +68,10 @@ df_tsne = tsne.fit_transform(scaled)
 # Convert the t-SNE result back to a DataFrame
 df_tsne = pd.DataFrame(df_tsne, columns=['t-SNE1', 't-SNE2'])
 print(df_tsne.head())
+
+# Plot the t-SNE components
+plt.scatter(df_tsne['t-SNE1'], df_tsne['t-SNE2'])
+plt.title('t-SNE - Dimensionality Reduction')
+plt.xlabel('t-SNE1')
+plt.ylabel('t-SNE2')
+plt.show()
