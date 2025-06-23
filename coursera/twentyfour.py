@@ -60,3 +60,11 @@ plt.title('PCA - Dimensionality Reduction')
 plt.xlabel('PCA1')
 plt.ylabel('PCA2')
 plt.show()
+
+# Apply t-SNE to reduce dimensions to 2
+tsne = TSNE(n_components=2, perplexity=3, random_state=42)
+df_tsne = tsne.fit_transform(scaled)
+
+# Convert the t-SNE result back to a DataFrame
+df_tsne = pd.DataFrame(df_tsne, columns=['t-SNE1', 't-SNE2'])
+print(df_tsne.head())
