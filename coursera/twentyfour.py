@@ -36,3 +36,12 @@ df = pd.DataFrame(data)
 
 # Display the first few rows of the dataset
 print(df.head())
+
+# Normalize the data
+scaler = StandardScaler()
+scaled = scaler.fit_transform(df)
+
+# Convert back to DataFrame for easy handling
+df_scaled = pd.DataFrame(scaled, columns=['AnnualIncome', 'SpendingScore','Age'])
+
+print(df_scaled.head())
