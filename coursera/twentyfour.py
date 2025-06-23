@@ -45,3 +45,11 @@ scaled = scaler.fit_transform(df)
 df_scaled = pd.DataFrame(scaled, columns=['AnnualIncome', 'SpendingScore','Age'])
 
 print(df_scaled.head())
+
+# Apply PCA to reduce dimensions from 3 to 2
+pca = PCA(n_components=2)
+df_pca = pca.fit_transform(scaled)
+
+# Convert back to DataFrame for easy handling
+df_pca = pd.DataFrame(df_pca, columns=['PCA1', 'PCA2'])
+print(df_pca.head())
