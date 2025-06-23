@@ -53,3 +53,10 @@ df_pca = pca.fit_transform(scaled)
 # Convert back to DataFrame for easy handling
 df_pca = pd.DataFrame(df_pca, columns=['PCA1', 'PCA2'])
 print(df_pca.head())
+
+# Plot the PCA components
+plt.scatter(df_pca['PCA1'], df_pca['PCA2'])
+plt.title('PCA - Dimensionality Reduction')
+plt.xlabel('PCA1')
+plt.ylabel('PCA2')
+plt.show()
