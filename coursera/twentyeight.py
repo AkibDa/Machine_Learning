@@ -43,3 +43,28 @@ for episode in range(1000):
         state = next_state
         if next_state == 24 or next_state == 12:  # End episode if goal or pitfall is reached
             done = True
+
+import matplotlib.pyplot as plt
+
+# Calculate and store cumulative rewards
+cumulative_rewards = []
+for episode in range(1000):
+    total_reward = 0
+    state = np.random.randint(0, n_states)
+    done = False
+    while not done:
+        action = epsilon_greedy_action(Q_table, state, epsilon)
+        next_state = np.random.randint(0, n_states)
+        reward = rewards[next_state]
+        total_reward += reward
+        state = next_state
+        if next_state == 24 or next_state == 12:
+            done = True
+    cumulative_rewards.append(total_reward)
+
+# Plot the cumulative rewards over episodes
+plt.plot(cumulative_rewards)
+plt.xlabel('Episodes')
+plt.ylabel('Cumulative Reward')
+plt.title('Cumulative Reward Over Episodes')
+plt.show()
