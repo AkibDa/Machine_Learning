@@ -68,3 +68,27 @@ plt.xlabel('Episodes')
 plt.ylabel('Cumulative Reward')
 plt.title('Cumulative Reward Over Episodes')
 plt.show()
+
+# Calculate and store episode lengths
+episode_lengths = []
+actions = []
+for episode in range(1000):
+  steps = 0
+  state = np.random.randint(0, n_states)
+  done = False
+  while not done:
+    action = epsilon_greedy_action(Q_table, state, epsilon)
+
+    next_state = np.random.randint(0, n_states)
+    steps += 1
+    state = next_state
+    if next_state == 24 or next_state == 12:
+      done = True
+  episode_lengths.append(steps)
+
+# Plot a histogram of episode lengths
+plt.hist(episode_lengths, bins=20)
+plt.xlabel('Episode Length (Steps)')
+plt.ylabel('Frequency')
+plt.title('Distribution of Episode Lengths')
+plt.show()
