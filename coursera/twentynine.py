@@ -19,3 +19,18 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 print(f"Mean Squared Error: {mse}")
+
+# Unsupervised learning: Customer segmentation
+
+from sklearn.cluster import KMeans
+import numpy as np
+
+# Sample customer data (number of purchases, total spending, product categories)
+X = np.array([[5, 1000, 2], [10, 5000, 5], [2, 500, 1], [8, 3000, 3]])
+
+# Create and fit the KMeans model
+kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+
+# Print the cluster centers and labels
+print(f"Cluster Centers: {kmeans.cluster_centers_}")
+print(f"Labels: {kmeans.labels_}")
