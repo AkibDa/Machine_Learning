@@ -25,8 +25,8 @@ print(f"Mean Squared Error: {mse}")
 from sklearn.cluster import KMeans
 import numpy as np
 
-# Sample customer data (number of purchases, total spending, product categories)
-X = np.array([[5, 1000, 2], [10, 5000, 5], [2, 500, 1], [8, 3000, 3]])
+# Sample customer data: number of purchases, total spending, product categories purchased
+X = np.array([[5, 1000, 2], [10, 5000, 5], [2, 500, 1], [8, 3000, 3], [12, 6000, 6]])
 
 # Create and fit the KMeans model
 kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
@@ -35,40 +35,132 @@ kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
 print(f"Cluster Centers: {kmeans.cluster_centers_}")
 print(f"Labels: {kmeans.labels_}")
 
+import matplotlib.pyplot as plt
+
+plt.scatter(X[:, 0], X[:, 1], c=kmeans.labels_, cmap='viridis')
+plt.xlabel('Number of Purchases')
+plt.ylabel('Total Spending')
+plt.title('Customer Segmentation using K-Means Clustering')
+plt.show()
+
 # RL: Training an agent to play tic-tac-toe
 
 import numpy as np
+import random
+import matplotlib.pyplot as plt
 
-# Initialize Q-table with zeros for all state-action pairs
-Q_table = np.zeros((9, 9))  # 9 possible states (board positions) and 9 possible actions
+# Initialize the Q-table
+Q = {}
 
-# Learning parameters
-alpha = 0.1  # Learning rate
-gamma = 0.9  # Discount factor
-epsilon = 0.1  # Exploration rate
+# Define the Tic-Tac-Toe board
+def initialize_board():
+    return np.zeros((3, 3), dtype=int)
 
-# Sample function to select action using epsilon-greedy policy
-def epsilon_greedy_action(state, Q_table, epsilon):
-    if np.random.uniform(0, 1) < epsilon:
-        return np.random.randint(0, 9)  # Random action (explore)
+# Check for a win
+def check_win(board, player):
+    for i in range(3):
+        if np.all(board[i, :] == player) or np.all(board[:, i] == player):
+            return True
+    if board[0, 0] == board[1, 1] == board[2, 2] == player or board[0, 2] == board[1, 1] == board[2, 0] == player:
+        return True
+    return False
+
+# Check for a draw
+def check_draw(board):
+    return not np.any(board == 0)
+
+# Get available actions
+def get_available_actions(board):
+    return [(i, j) for i in range(3) for j in range(3) if board[i, j] == 0]
+
+# Choose an action using epsilon-greedy policy
+def choose_action(state, board, epsilon):
+    if random.uniform(0, 1) < epsilon:
+        return random.choice(get_available_actions(board))
     else:
-        return np.argmax(Q_table[state])  # Best action (exploit)
+        if state in Q and Q[state]:
+            # Choose the action with the maximum Q-value
+            return max(Q[state], key=Q[state].get)
+        else:
+            # No action in Q-table, choose random
+            return random.choice(get_available_actions(board))
 
-# Update Q-values after each game (simplified example)
-def update_q_table(state, action, reward, next_state, Q_table):
-    Q_table[state, action] = Q_table[state, action] + alpha * (
-        reward + gamma * np.max(Q_table[next_state]) - Q_table[state, action]
-    )
+# Update Q-value
+def update_q_value(state, action, reward, next_state, alpha, gamma):
+    max_future_q = max(Q.get(next_state, {}).values(), default=0)
+    current_q = Q.get(state, {}).get(action, 0)
+    new_q = current_q + alpha * (reward + gamma * max_future_q - current_q)
+    if state not in Q:
+        Q[state] = {}
+    Q[state][action] = new_q
 
-# Example simulation of a game where the agent learns
-for episode in range(1000):
-    state = np.random.randint(0, 9)  # Random initial state
-    done = False
-    while not done:
-        action = epsilon_greedy_action(state, Q_table, epsilon)
-        next_state = np.random.randint(0, 9)  # Simulate next state
-        reward = 1 if next_state == 'win' else -1 if next_state == 'loss' else 0  # Simulate rewards
-        update_q_table(state, action, reward, next_state, Q_table)
-        state = next_state
-        if reward != 0:
-            done = True  # End the game if win/loss
+# Convert board to a tuple (hashable type)
+def board_to_tuple(board):
+    return tuple(map(tuple, board))
+
+# Train the agent
+def train(episodes, alpha=0.1, gamma=0.9, epsilon=0.1):
+    win_history = []
+    for episode in range(episodes):
+        board = initialize_board()
+        state = board_to_tuple(board)
+        done = False
+        result = None  # Initialize result
+        while not done:
+            action = choose_action(state, board, epsilon)
+            board[action[0], action[1]] = 1
+            next_state = board_to_tuple(board)
+            if check_win(board, 1):
+                update_q_value(state, action, 1, next_state, alpha, gamma)
+                result = 1  # Agent won
+                done = True
+            elif check_draw(board):
+                update_q_value(state, action, 0.5, next_state, alpha, gamma)
+                result = 0  # Draw
+                done = True
+            else:
+                opponent_action = random.choice(get_available_actions(board))
+                board[opponent_action[0], opponent_action[1]] = -1
+                next_state = board_to_tuple(board)
+                if check_win(board, -1):
+                    update_q_value(state, action, -1, next_state, alpha, gamma)
+                    result = -1  # Agent lost
+                    done = True
+                elif check_draw(board):
+                    update_q_value(state, action, 0.5, next_state, alpha, gamma)
+                    result = 0  # Draw
+                    done = True
+                else:
+                    update_q_value(state, action, 0, next_state, alpha, gamma)
+            state = next_state
+        # Record the result
+        if result == 1:
+            win_history.append(1)
+        else:
+            win_history.append(0)
+    return win_history
+
+# Train the agent for 10000 episodes
+win_history = train(10000)
+
+# Calculate the moving average of win rate
+def moving_average(data, window_size):
+    return np.convolve(data, np.ones(window_size), 'valid') / window_size
+
+# Set the window size for the moving average
+window_size = 100
+
+# Compute the moving average
+win_rate = moving_average(win_history, window_size)
+
+# Generate episodes for plotting
+episodes = np.arange(window_size, len(win_history) + 1)
+
+# Plot the win rate over time
+plt.figure(figsize=(12,6))
+plt.plot(episodes, win_rate, label='Win Rate')
+plt.xlabel('Episodes')
+plt.ylabel('Win Rate')
+plt.title('Agent Win Rate Over Time (Moving Average over {} episodes)'.format(window_size))
+plt.legend()
+plt.show()
